@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatore Risparmio Fotovoltaico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .calculator-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+
+        .slider-group {
+            margin-bottom: 35px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .slider-label span {
+            color: #555;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .slider-value {
+            background: #667eea;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.6);
+        }
+
+        .results {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            color: white;
+        }
+
+        .results h2 {
+            font-size: 22px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .result-highlight {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .result-highlight .result-label {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .result-highlight .result-value {
+            font-size: 36px;
+            color: #ffd700;
+        }
+
+        .icon {
+            margin-right: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .calculator-container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .result-value {
+                font-size: 20px;
+            }
+
+            .result-highlight .result-value {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <h1>⚡ Calcolatore Risparmio Fotovoltaico</h1>
+        <p class="subtitle">Scopri quanto puoi risparmiare con un impianto fotovoltaico</p>
+
+        <div class="slider-group">
+            <div class="slider-label">
+                <span>💡 Consumo annuo (kWh)</span>
+                <span class="slider-value" id="consumo-value">3000</span>
+            </div>
+            <input type="range" min="1000" max="10000" value="3000" step="100" class="slider" id="consumo-slider">
+        </div>
+
+        <div class="slider-group">
+            <div class="slider-label">
+                <span>💰 Costo energia (€/kWh)</span>
+                <span class="slider-value" id="costo-value">0.30</span>
+            </div>
+            <input type="range" min="0.15" max="0.60" value="0.30" step="0.01" class="slider" id="costo-slider">
+        </div>
+
+        <div class="slider-group">
+            <div class="slider-label">
+                <span>☀️ Potenza impianto (kW)</span>
+                <span class="slider-value" id="potenza-value">3.0</span>
+            </div>
+            <input type="range" min="2" max="10" value="3" step="0.5" class="slider" id="potenza-slider">
+        </div>
+
+        <div class="slider-group">
+            <div class="slider-label">
+                <span>📊 Autoconsumo (%)</span>
+                <span class="slider-value" id="autoconsumo-value">70</span>
+            </div>
+            <input type="range" min="30" max="90" value="70" step="5" class="slider" id="autoconsumo-slider">
+        </div>
+
+        <div class="results">
+            <h2>📈 Risultati</h2>
+
+            <div class="result-item">
+                <span class="result-label">Produzione annua stimata</span>
+                <span class="result-value" id="produzione-annua">0</span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">Energia autoconsumata</span>
+                <span class="result-value" id="energia-autoconsumata">0</span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">Energia immessa in rete</span>
+                <span class="result-value" id="energia-rete">0</span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">Risparmio autoconsumo</span>
+                <span class="result-value" id="risparmio-autoconsumo">0</span>
+            </div>
+
+            <div class="result-item">
+                <span class="result-label">Guadagno vendita energia</span>
+                <span class="result-value" id="guadagno-vendita">0</span>
+            </div>
+
+            <div class="result-highlight">
+                <div class="result-label">💎 Risparmio Totale Annuo</div>
+                <div class="result-value" id="risparmio-totale">€ 0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Elementi DOM
+        const consumoSlider = document.getElementById('consumo-slider');
+        const consumoValue = document.getElementById('consumo-value');
+        const costoSlider = document.getElementById('costo-slider');
+        const costoValue = document.getElementById('costo-value');
+        const potenzaSlider = document.getElementById('potenza-slider');
+        const potenzaValue = document.getElementById('potenza-value');
+        const autoconsumoSlider = document.getElementById('autoconsumo-slider');
+        const autoconsumoValue = document.getElementById('autoconsumo-value');
+
+        // Elementi risultati
+        const produzioneAnnua = document.getElementById('produzione-annua');
+        const energiaAutoconsumata = document.getElementById('energia-autoconsumata');
+        const energiaRete = document.getElementById('energia-rete');
+        const risparmioAutoconsumo = document.getElementById('risparmio-autoconsumo');
+        const guadagnoVendita = document.getElementById('guadagno-vendita');
+        const risparmioTotale = document.getElementById('risparmio-totale');
+
+        // Costanti
+        const ORE_SOLE_ITALIA = 1300; // Ore equivalenti medie in Italia
+        const TARIFFA_VENDITA = 0.12; // €/kWh per energia immessa in rete
+
+        function calcolaRisparmio() {
+            const consumo = parseFloat(consumoSlider.value);
+            const costo = parseFloat(costoSlider.value);
+            const potenza = parseFloat(potenzaSlider.value);
+            const autoconsumo = parseFloat(autoconsumoSlider.value) / 100;
+
+            // Calcoli
+            const produzione = potenza * ORE_SOLE_ITALIA;
+            const energiaAuto = produzione * autoconsumo;
+            const energiaVenduta = produzione * (1 - autoconsumo);
+            const risparmioAuto = energiaAuto * costo;
+            const guadagno = energiaVenduta * TARIFFA_VENDITA;
+            const risparmioTot = risparmioAuto + guadagno;
+
+            // Aggiorna visualizzazione
+            produzioneAnnua.textContent = `${Math.round(produzione).toLocaleString('it-IT')} kWh`;
+            energiaAutoconsumata.textContent = `${Math.round(energiaAuto).toLocaleString('it-IT')} kWh`;
+            energiaRete.textContent = `${Math.round(energiaVenduta).toLocaleString('it-IT')} kWh`;
+            risparmioAutoconsumo.textContent = `€ ${Math.round(risparmioAuto).toLocaleString('it-IT')}`;
+            guadagnoVendita.textContent = `€ ${Math.round(guadagno).toLocaleString('it-IT')}`;
+            risparmioTotale.textContent = `€ ${Math.round(risparmioTot).toLocaleString('it-IT')}`;
+        }
+
+        // Event listeners per gli slider
+        consumoSlider.addEventListener('input', (e) => {
+            consumoValue.textContent = `${parseInt(e.target.value).toLocaleString('it-IT')} kWh`;
+            calcolaRisparmio();
+        });
+
+        costoSlider.addEventListener('input', (e) => {
+            costoValue.textContent = `€ ${parseFloat(e.target.value).toFixed(2)}`;
+            calcolaRisparmio();
+        });
+
+        potenzaSlider.addEventListener('input', (e) => {
+            potenzaValue.textContent = `${parseFloat(e.target.value).toFixed(1)} kW`;
+            calcolaRisparmio();
+        });
+
+        autoconsumoSlider.addEventListener('input', (e) => {
+            autoconsumoValue.textContent = `${e.target.value}%`;
+            calcolaRisparmio();
+        });
+
+        // Calcolo iniziale
+        calcolaRisparmio();
+    </script>
+</body>
+</html>
